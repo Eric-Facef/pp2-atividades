@@ -1,71 +1,49 @@
-import Card from "./Card";
-import Contador from "./Contador";
-import Imc from "./Imc";
-import Botao from "./Botao";
-import ContadorPasso from "./ContadorPasso";
-import CartaoProduto from "./CartaoProduto";
-import TarefaCard from "./TarefaCard";
-import ConversorMoeda from "./ConversorMoeda";
-import Enquete from "./Enquete";
+import { useState } from "react";
+import ListaPosts from "./ListaPosts";
+import TabelaUsuarios from "./TabelaUsuarios";
+import TarefasFiltro from "./TarefasFiltro";
+import BuscaPosts from "./BuscaPosts";
+import ComentariosPost from "./ComentariosPost";
+import ListaApiRecarregar from "./ListaApiRecarregar";
 
-const produtos = [
-  { nome: "Teclado", preco: 149.9 },
-  { nome: "Mouse", preco: 79.5 },
-  { nome: "Monitor", preco: 899 },
+const EXERCICIOS = [
+  { id: 1, titulo: "1 · Lista de posts", componente: <ListaPosts /> },
+  { id: 2, titulo: "2 · Tabela de usuários", componente: <TabelaUsuarios /> },
+  { id: 3, titulo: "3 · Tarefas com filtro", componente: <TarefasFiltro /> },
+  { id: 4, titulo: "4 · Busca por título", componente: <BuscaPosts /> },
+  { id: 5, titulo: "5 · Comentários de um post", componente: <ComentariosPost /> },
+  { id: 6, titulo: "6 · Botão recarregar", componente: <ListaApiRecarregar /> },
 ];
 
-function Secao({ titulo, children }: { titulo: string; children: React.ReactNode }) {
-  return (
-    <section className="flex flex-col gap-3">
-      <h2 className="text-xl font-bold border-b pb-1">{titulo}</h2>
-      <div className="flex flex-wrap gap-3 items-start">{children}</div>
-    </section>
-  );
-}
-
 function App() {
+  const [ativo, setAtivo] = useState(1);
+  const exercicio = EXERCICIOS.find((e) => e.id === ativo)!;
+
   return (
-    <div className="min-h-screen bg-slate-100 p-6 flex flex-col gap-8">
-      <h1 className="text-3xl font-bold">Frontend PP2</h1>
+    <div className="p-6 max-w-4xl mx-auto space-y-4 text-slate-800">
+      <h1 className="text-2xl font-bold">Listas, useEffect e fetch</h1>
 
-      <Secao titulo="Exemplos da aula">
-        <Card title="Estudar" description="Ler cap. 4" />
-        <Contador />
-        <Imc />
-      </Secao>
-
-      <Secao titulo="Exercício 1 — Botão reutilizável">
-        <Botao texto="Salvar" variante="primario" onClick={() => alert("Salvo!")} />
-        <Botao texto="Excluir" variante="perigo" onClick={() => alert("Excluído!")} />
-        <Botao texto="Enviar" variante="primario" onClick={() => alert("Enviado!")} />
-      </Secao>
-
-      <Secao titulo="Exercício 2 — Contador com passo">
-        <ContadorPasso passo={1} />
-        <ContadorPasso passo={5} />
-      </Secao>
-
-      <Secao titulo="Exercício 3 — Cartão de produto">
-        {produtos.map((p) => (
-          <CartaoProduto key={p.nome} nome={p.nome} preco={p.preco} />
+      <nav className="flex flex-wrap gap-2">
+        {EXERCICIOS.map((e) => (
+          <button
+            key={e.id}
+            onClick={() => setAtivo(e.id)}
+            className={
+              "px-3 py-1 rounded border " +
+              (ativo === e.id
+                ? "bg-blue-600 text-white border-blue-600"
+                : "bg-white hover:bg-slate-100")
+            }
+          >
+            {e.titulo}
+          </button>
         ))}
-      </Secao>
+      </nav>
 
-      <Secao titulo="Exercício 4 — Cartão de tarefa">
-        <TarefaCard titulo="Estudar React" />
-        <TarefaCard titulo="Fazer exercícios" />
-        <TarefaCard titulo="Revisar props" />
-      </Secao>
-
-      <Secao titulo="Exercício 5 — Conversor de moeda">
-        <ConversorMoeda moeda="USD" taxa={0.18} />
-        <ConversorMoeda moeda="EUR" taxa={0.16} />
-      </Secao>
-
-      <Secao titulo="Exercício 6 — Enquete">
-        <Enquete pergunta="Melhor linguagem?" opcaoA="TypeScript" opcaoB="Python" />
-        <Enquete pergunta="Melhor editor?" opcaoA="VS Code" opcaoB="WebStorm" />
-      </Secao>
+      <section className="border rounded p-4">
+        {/* key força o React a remontar o componente ao trocar de aba */}
+        <div key={exercicio.id}>{exercicio.componente}</div>
+      </section>
     </div>
   );
 }
